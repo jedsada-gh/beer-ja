@@ -9352,6 +9352,13 @@ react-slick@~0.23.2:
     prettier "^1.14.3"
     resize-observer-polyfill "^1.5.0"
 
+react-text-truncate@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/react-text-truncate/-/react-text-truncate-0.13.1.tgz#0632cbf8bdd5f7826865c7cc55dc8a2c3a2c9147"
+  integrity sha1-BjLL+L3V94JoZcfMVdyKLDoskUc=
+  dependencies:
+    prop-types "^15.5.7"
+
 react@^16.7.0:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.7.0.tgz#b674ec396b0a5715873b350446f7ea0802ab6381"

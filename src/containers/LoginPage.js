@@ -8,7 +8,8 @@ class LoginPage extends Component {
     email: '',
     password: '',
     isShowModal: false,
-    isLogin: false
+    isLogin: false,
+    imageUrl: ''
   };
 
   componentDidMount() {
@@ -29,7 +30,8 @@ class LoginPage extends Component {
       'user-data',
       JSON.stringify({
         email: email,
-        isLoggedIn: true
+        isLoggedIn: true,
+        imageUrl: this.state.imageUrl
       })
     );
     this.setState({ isLoading: false });
@@ -49,6 +51,7 @@ class LoginPage extends Component {
   onClickLoginWithFacebook = () => {
     this.setState({ isLoading: true });
     auth.signInWithPopup(provider).then(({ user }) => {
+      this.setState({ imageUrl: `${user.photoURL}?height=500` });
       this.saveInformationUser(user.email);
     });
   };

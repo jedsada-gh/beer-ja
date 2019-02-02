@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Avatar } from 'antd';
 
 class ProfilePage extends Component {
   state = {
     email: '',
-    isLoading: false
+    isLoading: false,
+    imageUrl: ''
   };
 
   componentDidMount() {
     const jsonStr = localStorage.getItem('user-data');
     const email = jsonStr && JSON.parse(jsonStr).email;
-    this.setState({ email });
+    var imageUrl = jsonStr && JSON.parse(jsonStr).imageUrl;
+    if (!imageUrl) {
+      imageUrl = 'https://icons-for-free.com/free-icons/png/512/1902268.png';
+    }
+    this.setState({ email, imageUrl });
   }
 
   onClickLogout = () => {
@@ -30,7 +35,8 @@ class ProfilePage extends Component {
   render() {
     return (
       <div>
-        <h1>Email: {this.state.email}</h1>
+        <Avatar size="large" src={this.state.imageUrl} />
+        <h3>Email: {this.state.email}</h3>
         <Button
           type="primary"
           loading={this.state.isLoading}
