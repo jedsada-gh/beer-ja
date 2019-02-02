@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Input, Icon, Divider, message, Modal } from 'antd';
+import { Form, Button, Input, Icon, message } from 'antd';
 import { auth } from '../firebase';
 
 class RegisterPage extends Component {
