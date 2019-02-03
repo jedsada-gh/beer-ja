@@ -64,25 +64,26 @@ class MainPage extends Component {
     const index = items.findIndex(item => {
       return item.name === itemFav.name;
     });
-
     if (index != -1) {
       items.splice(index, 1);
       localStorage.setItem(
         `beer-ja-list-fav-${this.state.email}`,
         JSON.stringify(items)
       );
-      message.success('unfavorite this item successfully', 1);
-      this.setState({ favItems: items });
-      this.onModalClickCancel();
+      message.success('unfavorite this item successfully', 1, () => {
+        this.setState({ favItems: items });
+        this.onModalClickCancel();
+      });
     } else {
       items.push(itemFav);
       localStorage.setItem(
         `beer-ja-list-fav-${this.state.email}`,
         JSON.stringify(items)
       );
-      message.success('Saved your favorite this item', 1);
-      this.setState({ favItems: items });
-      this.onModalClickCancel();
+      message.success('Saved your favorite this item', 1, () => {
+        this.setState({ favItems: items });
+        this.onModalClickCancel();
+      });
     }
   };
 
