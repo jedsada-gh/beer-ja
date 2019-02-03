@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Modal, Button } from 'antd';
+import { Layout, Menu, Modal, Button, message } from 'antd';
 import RouteMenu from './RouteMenu';
 import { connect } from 'react-redux';
 
@@ -30,17 +30,26 @@ const mapDispatchToProps = dispatch => {
 class MainPage extends Component {
   state = {
     items: [],
-    currentMenu: menus[0]
+    currentMenu: menus[0],
+    email: '',
+    favItems: []
   };
 
   componentDidMount() {
+    const jsonStr = localStorage.getItem('user-data');
+    const email = jsonStr && JSON.parse(jsonStr).email;
     const { pathname } = this.props.location;
     var currentMenu = menus[0];
     if (pathname != '/') {
       currentMenu = pathname.replace('/', '');
       if (!menus.includes(currentMenu)) currentMenu = menus[0];
     }
-    this.setState({ currentMenu });
+    const jsonFavStr = localStorage.getItem(`beer-ja-list-fav-${email}`);
+    if (jsonFavStr) {
+      const items = jsonFavStr && JSON.parse(jsonFavStr);
+      this.setState({ favItems: items });
+    }
+    this.setState({ currentMenu, email });
   }
 
   onMenuClick = e => {
@@ -50,15 +59,53 @@ class MainPage extends Component {
   };
 
   onClickFavoriteItem = () => {
-    this.props.onDismissDialog();
+    const items = this.state.favItems;
+    const itemFav = this.props.itemBeer;
+    const index = items.findIndex(item => {
+      return item.name === itemFav.name;
+    });
+
+    if (index != -1) {
+      items.splice(index, 1);
+      localStorage.setItem(
+        `beer-ja-list-fav-${this.state.email}`,
+        JSON.stringify(items)
+      );
+      message.success('unfavorite this item successfully', 1);
+      this.setState({ favItems: items });
+      this.onModalClickCancel();
+    } else {
+      items.push(itemFav);
+      localStorage.setItem(
+        `beer-ja-list-fav-${this.state.email}`,
+        JSON.stringify(items)
+      );
+      message.success('Saved your favorite this item', 1);
+      this.setState({ favItems: items });
+      this.onModalClickCancel();
+    }
   };
 
   onClickBuyItem = () => {
+    message.info('coming soon...');
     this.props.onDismissDialog();
   };
 
   onModalClickCancel = () => {
     this.props.onDismissDialog();
+  };
+
+  checkItemFavorited = () => {
+    const items = this.state.favItems;
+    const itemBeer = this.props.itemBeer;
+    const result = items.find(item => {
+      return item.name === itemBeer.name;
+    });
+    if (result) {
+      return 'primary';
+    } else {
+      return '';
+    }
   };
 
   render() {
@@ -90,16 +137,7 @@ class MainPage extends Component {
                 <Menu.Item key={menus[2]}>Profile</Menu.Item>
               </Menu>
             </Header>
-            <Content
-              style={{
-                padding: '16px',
-                marginTop: 64,
-                minHeight: '600px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'flex'
-              }}
-            >
+            <Content>
               <RouteMenu items={this.state.items} />
             </Content>
             <Footer style={{ textAlign: 'center', background: 'white' }}>
@@ -119,7 +157,7 @@ class MainPage extends Component {
               footer={[
                 <Button
                   key="submit"
-                  type="primary"
+                  type={this.checkItemFavorited()}
                   icon="heart"
                   size="large"
                   shape="circle"

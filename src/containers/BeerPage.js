@@ -15,7 +15,16 @@ class BeerPage extends Component {
 
   render() {
     return (
-      <div>
+      <div
+        style={{
+          padding: '16px',
+          marginTop: 64,
+          minHeight: '600px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          display: 'flex'
+        }}
+      >
         {this.state.items.length > 0 ? (
           <ListBeer items={this.state.items} />
         ) : (
