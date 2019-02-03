@@ -1,9 +1,31 @@
 import React, { Component } from 'react';
-import { Spin, Layout, Menu } from 'antd';
+import { Layout, Menu, Modal, Button, Divider } from 'antd';
 import RouteMenu from './RouteMenu';
+import { connect } from 'react-redux';
 
 const { Header, Content, Footer } = Layout;
 const menus = ['home', 'favorite', 'profile'];
+
+const mapStateToProps = state => {
+  return {
+    isShowDialog: state.isShowDialog,
+    itemBeer: state.itemBeer
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onDismissDialog: () =>
+      dispatch({
+        type: 'dismiss_dialog'
+      }),
+    onItemMovieClick: item =>
+      dispatch({
+        type: 'click_item',
+        payload: item
+      })
+  };
+};
 
 class MainPage extends Component {
   state = {
@@ -27,7 +49,20 @@ class MainPage extends Component {
     this.props.history.replace(path);
   };
 
+  onClickFavoriteItem = () => {
+    this.props.onDismissDialog();
+  };
+
+  onClickBuyItem = () => {
+    this.props.onDismissDialog();
+  };
+
+  onModalClickCancel = () => {
+    this.props.onDismissDialog();
+  };
+
   render() {
+    const itemBeer = this.props.itemBeer;
     return (
       <div>
         <div style={{ height: '100vh' }}>
@@ -72,9 +107,73 @@ class MainPage extends Component {
             </Footer>
           </Layout>
         </div>
+
+        {itemBeer != null ? (
+          <div>
+            <Modal
+              width="40%"
+              style={{ maxHeight: '70%' }}
+              title={itemBeer.name}
+              visible={this.props.isShowDialog}
+              onCancel={this.onModalClickCancel}
+              footer={[
+                <Button
+                  key="submit"
+                  type="primary"
+                  icon="heart"
+                  size="large"
+                  shape="circle"
+                  onClick={this.onClickFavoriteItem}
+                />,
+                <Button
+                  key="submit"
+                  type="primary"
+                  icon="shopping-cart"
+                  size="large"
+                  shape="circle"
+                  onClick={this.onClickBuyItem}
+                />
+              ]}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: '16px'
+                }}
+              >
+                <img
+                  src={itemBeer.image_url}
+                  style={{ height: '200px', width: 'auto' }}
+                />
+              </div>
+              <p>
+                <b>Tagline:</b> {itemBeer.tagline}
+              </p>
+              <p>
+                <b>First Brewed:</b> {itemBeer.first_brewed}
+              </p>
+              <p>
+                <b>Description:</b> {itemBeer.description}
+              </p>
+              <p>
+                <b>Brewers Tips:</b> {itemBeer.brewers_tips}
+              </p>
+              <p>
+                <b>Contributed by:</b> {itemBeer.contributed_by}
+              </p>
+            </Modal>
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
 }
 
-export default MainPage;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MainPage);

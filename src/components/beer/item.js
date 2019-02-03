@@ -1,14 +1,25 @@
 import React from 'react';
-import { Card, message } from 'antd';
+import { Card } from 'antd';
 import TextTruncate from 'react-text-truncate';
+import { connect } from 'react-redux';
 
 const { Meta } = Card;
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onItemBeerClick: item =>
+      dispatch({
+        type: 'click_item',
+        payload: item
+      })
+  };
+};
 
 function BeerItem(props) {
   return (
     <Card
       onClick={() => {
-        message.info('Coming soon...');
+        props.onItemBeerClick(props.item);
       }}
       hoverable
       cover={
@@ -35,4 +46,7 @@ function BeerItem(props) {
   );
 }
 
-export default BeerItem;
+export default connect(
+  null,
+  mapDispatchToProps
+)(BeerItem);
