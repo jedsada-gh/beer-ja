@@ -34,16 +34,27 @@ class ProfilePage extends Component {
 
   render() {
     return (
-      <div>
-        <Avatar size="large" src={this.state.imageUrl} />
-        <h3>Email: {this.state.email}</h3>
-        <Button
-          type="primary"
-          loading={this.state.isLoading}
-          onClick={this.onClickLogout}
-        >
-          Logout
-        </Button>
+      <div
+        style={{
+          padding: '16px',
+          marginTop: 64,
+          minHeight: '600px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          display: 'flex'
+        }}
+      >
+        <div>
+          <Avatar size="large" src={this.state.imageUrl} />
+          <h3>Email: {this.state.email}</h3>
+          <Button
+            type="primary"
+            loading={this.state.isLoading}
+            onClick={this.onClickLogout}
+          >
+            Logout
+          </Button>
+        </div>
       </div>
     );
   }
