@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Modal, Button, Divider } from 'antd';
+import { Layout, Menu, Modal, Button } from 'antd';
 import RouteMenu from './RouteMenu';
 import { connect } from 'react-redux';
 
