@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Modal, Button, message } from 'antd';
+import { Layout, Menu, Modal, Button, message, Badge, Icon } from 'antd';
 import RouteMenu from './RouteMenu';
 import { connect } from 'react-redux';
 
@@ -32,7 +32,8 @@ class MainPage extends Component {
     items: [],
     currentMenu: menus[0],
     email: '',
-    favItems: []
+    favItems: [],
+    cartItems: []
   };
 
   componentDidMount() {
@@ -49,13 +50,20 @@ class MainPage extends Component {
       const items = jsonFavStr && JSON.parse(jsonFavStr);
       this.setState({ favItems: items });
     }
+    const jsonCartStr = localStorage.getItem(`beer-ja-list-cart-${email}`);
+    if (jsonCartStr) {
+      const cartItems = jsonCartStr && JSON.parse(jsonCartStr);
+      this.setState({ cartItems: cartItems });
+    }
     this.setState({ currentMenu, email });
   }
 
   onMenuClick = e => {
-    var path = '/';
-    path = `/${e.key}`;
-    this.props.history.replace(path);
+    if (e.key) {
+      var path = '/';
+      path = `/${e.key}`;
+      this.props.history.replace(path);
+    }
   };
 
   onClickFavoriteItem = () => {
@@ -87,9 +95,18 @@ class MainPage extends Component {
     }
   };
 
-  onClickBuyItem = () => {
-    message.info('coming soon...');
-    this.props.onDismissDialog();
+  onClickAddToCart = () => {
+    const items = this.state.cartItems;
+    const itemCart = this.props.itemBeer;
+    items.push(itemCart);
+    localStorage.setItem(
+      `beer-ja-list-cart-${this.state.email}`,
+      JSON.stringify(items)
+    );
+    message.success('Added to your cart', 1, () => {
+      this.setState({ cartItems: items });
+      this.onModalClickCancel();
+    });
   };
 
   onModalClickCancel = () => {
@@ -107,6 +124,10 @@ class MainPage extends Component {
     } else {
       return '';
     }
+  };
+
+  navigateToCart = () => {
+    this.props.history.replace('/cart');
   };
 
   render() {
@@ -128,7 +149,7 @@ class MainPage extends Component {
                 theme="light"
                 mode="horizontal"
                 defaultSelectedKeys={[this.state.currentMenu]}
-                style={{ lineHeight: '64px' }}
+                style={{ lineHeight: '64px', position: 'relative' }}
                 onClick={e => {
                   this.onMenuClick(e);
                 }}
@@ -136,6 +157,22 @@ class MainPage extends Component {
                 <Menu.Item key={menus[0]}>Home</Menu.Item>
                 <Menu.Item key={menus[1]}>Favorite</Menu.Item>
                 <Menu.Item key={menus[2]}>Profile</Menu.Item>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: '46px',
+                    transform: 'translateY(-40%)'
+                  }}
+                >
+                  <Badge
+                    count={this.state.cartItems.length}
+                    overflowCount={10}
+                    onClick={this.navigateToCart}
+                  >
+                    <Icon type="shopping-cart" style={{ fontSize: '30px' }} />
+                  </Badge>
+                </div>
               </Menu>
             </Header>
             <Content>
@@ -170,7 +207,7 @@ class MainPage extends Component {
                   icon="shopping-cart"
                   size="large"
                   shape="circle"
-                  onClick={this.onClickBuyItem}
+                  onClick={this.onClickAddToCart}
                 />
               ]}
             >

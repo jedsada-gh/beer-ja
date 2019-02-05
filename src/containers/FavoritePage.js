@@ -20,7 +20,6 @@ class FavoritePage extends Component {
   };
 
   render() {
-    console.log(this.props.isShowDialog);
     return (
       <div
         style={{
