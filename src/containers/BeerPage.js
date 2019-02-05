@@ -1,17 +1,35 @@
 import React, { Component } from 'react';
-import { Spin } from 'antd';
+import { Spin, Pagination } from 'antd';
 import ListBeer from '../components/beer/list';
 
 class BeerPage extends Component {
   state = {
-    items: []
+    items: [],
+    page: 1,
+    perPage: 40,
+    isLoading: true
   };
 
   componentDidMount() {
-    fetch('https://api.punkapi.com/v2/beers?page=1&per_page=40')
-      .then(response => response.json())
-      .then(items => this.setState({ items }));
+    this.loadData();
   }
+
+  loadData = () => {
+    this.setState({ isLoading: true });
+    fetch(
+      `https://api.punkapi.com/v2/beers?page=${this.state.page}&per_page=${
+        this.state.perPage
+      }`
+    )
+      .then(response => response.json())
+      .then(items => this.setState({ items, isLoading: false }));
+  };
+
+  onSelectPage = (page, pageSize) => {
+    this.setState({ page, perPage: pageSize }, () => {
+      this.loadData();
+    });
+  };
 
   render() {
     return (
@@ -25,8 +43,17 @@ class BeerPage extends Component {
           display: 'flex'
         }}
       >
-        {this.state.items.length > 0 ? (
-          <ListBeer items={this.state.items} />
+        {!this.state.isLoading ? (
+          <div>
+            <ListBeer items={this.state.items} />
+            <br />
+            <Pagination
+              total={240}
+              pageSize={40}
+              defaultCurrent={this.state.page}
+              onChange={this.onSelectPage}
+            />
+          </div>
         ) : (
           <Spin size="large" />
         )}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { List } from 'antd';
+import { List, Pagination } from 'antd';
 import BeerItem from './item';
 
 function ListBeer(props) {
